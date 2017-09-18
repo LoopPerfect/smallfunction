@@ -119,8 +119,8 @@ void functor(benchmark::State& state) {
   unsigned N = 100;
   std::vector<Functor> fs(N);
   std::vector<int> r(N);
-  while(state.KeepRunning()) {
 
+  while(state.KeepRunning()) {
 
     for(int i=0; i < N; ++i) {
       fs[i] = Functor{i, N};
@@ -128,8 +128,13 @@ void functor(benchmark::State& state) {
 
     int j = 0;
     std::transform(fs.begin(), fs.end(), r.begin(),  [&](auto const& f) {
-      return f(j++);
+      return f(j++); // execute the functor
     });
+  }
+
+  if( r[N-1] - r[0] != 9801 ) {
+    // lets make sure the optimizer does not optimizes away the thing we want to test
+    std::cout << r[N-1] - r[0]  << std::endl;
   }
 }
 
@@ -150,6 +155,10 @@ void smallFunction(benchmark::State& state) {
       return f(j++);
     });
   }
+
+  if( r[N-1] - r[0] != 9801 ) {
+    std::cout << r[N-1] - r[0]  << std::endl;
+  }
 }
 
 
@@ -158,8 +167,6 @@ void stdFunction(benchmark::State& state) {
   std::vector<std::function<unsigned(int const j)>> fs(N);
   std::vector<int> r(N);
   while(state.KeepRunning()) {
-
-
     for(int i=0; i < N; ++i) {
       fs[i] = [i, N] (int j) {
         return i*j+N;
@@ -170,6 +177,10 @@ void stdFunction(benchmark::State& state) {
     std::transform(fs.begin(), fs.end(), r.begin(),  [&](auto const& f) {
       return f(j++);
     });
+  }
+
+  if( r[N-1] - r[0] != 9801 ) {
+    std::cout << r[N-1] - r[0]  << std::endl;
   }
 }
 

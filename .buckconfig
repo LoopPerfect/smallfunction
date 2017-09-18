@@ -1,2 +1,2 @@
 [cxx]
-  cxxflags = -O3
+  cxxflags = -O3 -Os -Ofast

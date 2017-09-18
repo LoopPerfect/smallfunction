@@ -2,18 +2,18 @@
 include_defs('//BUCKAROO_DEPS')
 
 cxx_library(
-  name = 'function',
-  header_namespace = 'function',
+  name = 'smallfunction',
+  header_namespace = 'smallfunction',
   srcs = glob([
-    'function/src/**/*.cpp',
+    'smallfunction/src/**/*.cpp',
   ]),
   headers = subdir_glob([ # private include files
-    ('function/detail', '**/*.h'), # they are only accesible inside the library
-    ('function/detail', '**/*.hpp'),
+    ('smallfunction/detail', '**/*.h'), # they are only accesible inside the library
+    ('smallfunction/detail', '**/*.hpp'),
   ]),
   exported_headers = subdir_glob([ # public include files
-    ('function/include', '**/*.h'), # those will be exported
-    ('function/include', '**/*.hpp'), # and accessible via <function/header.h>
+    ('smallfunction/include', '**/*.h'), # those will be exported
+    ('smallfunction/include', '**/*.hpp'), # and accessible via <smallfunction/header.h>
   ]),
   deps = BUCKAROO_DEPS,
   visibility = ['PUBLIC']
@@ -21,8 +21,8 @@ cxx_library(
 
 cxx_binary(
   name = 'main',
-  srcs = ['function/apps/main.cpp'],
-  deps = [':function'],
+  srcs = ['smallfunction/apps/main.cpp'],
+  deps = [':smallfunction'],
   linker_flags = ['-lpthread'],
   visibility = ['PUBLIC']
 )
