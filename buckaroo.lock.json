@@ -1,0 +1,13 @@
+{
+  "google/benchmark": {
+    "source": {
+      "url": "https://github.com/google/benchmark/archive/4f8bfeae470950ef005327973f15b0044eceaceb.zip",
+      "sha256": "9be58359796160a073c9b1e75580239433e72c8fc6b40dd6e2d264b817e0e728",
+      "subPath": "benchmark-4f8bfeae470950ef005327973f15b0044eceaceb"
+    },
+    "buck": {
+      "url": "https://raw.githubusercontent.com/nikhedonia/benchmark/cea8820528eee7aa0e8442f8d08ea4cc0fe236d7/BUCK",
+      "sha256": "8718a5ad5823722a539f8fc9c067e7659c37063107d8f42c381a05001b5a07cc"
+    }
+  }
+}

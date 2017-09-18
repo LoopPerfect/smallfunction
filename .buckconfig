@@ -1,0 +1,2 @@
+[cxx]
+  cxxflags = -O3
