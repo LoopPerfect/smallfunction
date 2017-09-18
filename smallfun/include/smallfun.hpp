@@ -15,7 +15,7 @@ struct SFConcept {
 };
 
 template<class F, class ReturnType, class...Xs>
-struct SFModel
+struct SFModel final
   : SFConcept<ReturnType, Xs...> {
   F f;
 
