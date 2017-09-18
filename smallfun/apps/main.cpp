@@ -5,106 +5,10 @@
 #include <vector>
 #include <functional>
 #include <type_traits>
+#include <smallfun/smallfun.hpp>
 #include <benchmark/benchmark.h>
 
-template<class T, unsigned size=128>
-struct SmallFunction;
-
-template<class ReturnType, class...Xs>
-struct Concept {
-  virtual ReturnType operator()(Xs...)const = 0;
-  virtual ReturnType operator()(Xs...) = 0;
-  virtual void copy(void*)const = 0;
-  virtual ~Concept() {};
-};
-
-template<class F, class ReturnType, class...Xs>
-struct Model
-  : Concept<ReturnType, Xs...> {
-  F f;
-
-  Model(F const& f)
-    : f(f)
-  {}
-
-  virtual void copy(void* memory)const {
-    new (memory) Model<F, ReturnType, Xs...>(f);
-  }
-
-  virtual ReturnType operator()(Xs...xs)const {
-    return f(xs...);
-  }
-
-  virtual ReturnType operator()(Xs...xs) {
-    return f(xs...);
-  }
-
-  virtual ~Model() {}
-};
-
-
-template<class ReturnType, class...Xs, unsigned size>
-struct SmallFunction<ReturnType(Xs...), size> {
-  char memory[size];
-
-  bool allocated = 0;
-  using memType = decltype(memory);
-  using trait = Concept<ReturnType, Xs...>;
-
-  SmallFunction(){}
-
-  template<class F,
-    std::enable_if_t<(sizeof(Model<F, ReturnType, Xs...>)<=size), bool> = 0 >
-  SmallFunction(F const&f)
-    : allocated(sizeof(Model<F, ReturnType, Xs...>)) {
-    new (memory) Model<F, ReturnType, Xs...>(f);
-  }
-
-  template<unsigned s,
-    std::enable_if_t<(s <= size), bool> = 0>
-  SmallFunction(SmallFunction<ReturnType(Xs...), s> const& sf)
-    : allocated(sf.allocated) {
-    sf.copy(memory);
-  }
-
-
-  template<unsigned s,
-    std::enable_if_t<(s <= size), bool> = 0>
-  SmallFunction& operator=(SmallFunction<ReturnType(Xs...), s> const& sf) {
-    clean();
-    allocated = sf.allocated;
-    sf.copy(memory);
-  }
-
-  void clean() {
-    if (allocated) {
-      ((trait*)memory)->~trait();
-      allocated = 0;
-    }
-  }
-
-  ~SmallFunction() {
-    if (allocated) {
-      ((trait*)memory)->~trait();
-    }
-  }
-
-  template<class...Ys>
-  ReturnType operator()(Ys&&...ys) {
-    return (*(trait*)memory)(std::forward<Ys>(ys)...);
-  }
-
-  template<class...Ys>
-  ReturnType operator()(Ys&&...ys)const {
-    return (*(trait*)memory)(std::forward<Ys>(ys)...);
-  }
-
-  void copy(void* data)const {
-    if (allocated) {
-      ((trait*)memory)->copy(data);
-    }
-  }
-};
+using namespace smallfun;
 
 struct Functor {
   int i;
@@ -141,7 +45,9 @@ void functor(benchmark::State& state) {
 template<unsigned B>
 void smallFunction(benchmark::State& state) {
   unsigned N = 100;
-  std::vector<SmallFunction<unsigned(int const j), B >> fs(N);
+
+  using sf = SmallFun<unsigned(int const j), B >;
+  std::vector<sf> fs(N);
   std::vector<int> r(N);
   while(state.KeepRunning()) {
     for(int i=0; i < N; ++i) {
