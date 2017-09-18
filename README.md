@@ -41,16 +41,16 @@ Instead dynamically allocate memory on the **heap** - we can place the function 
 
 
 | test          |    time   | note |
-|-------------------------------------------------------------------|
+|---------------|-----------|---------------------------------------|
 | functor       |    191 ns | baseline thats the best we could do; hand crafted functor |
 | sf32          |    312 ns | This is big enough to store 2 ints   |
-| sf64          |    369 ns ||
-| sf128         |    346 ns ||
-| sf256         |    376 ns ||
-| sf512         |    503 ns ||
-| sf1024        |    569 ns ||
-| sf2048        |    870 ns ||
-| `std::function` |   1141 ns | Thats how std::function performs     |
+| sf64          |    369 ns | |
+| sf128         |    346 ns | |
+| sf256         |    376 ns | |
+| sf512         |    503 ns | |
+| sf1024        |    569 ns | |
+| sf2048        |    870 ns | |
+| std::function |   1141 ns | Thats how std::function performs     |
 
 
 ### The Test
