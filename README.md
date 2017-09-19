@@ -245,7 +245,7 @@ If It does not, we could fallback to allocating on the heap.
 - A more generic implementation of SmallFuncton would take a generic allocator.
 
 - We noticed that we cannot copy the memory just by copying the memory bitwise. However using typetraits, we could check if 
-the underlying Datatype is a pod and than copy bitwise.
+the underlying Datatype is a POD and than copy bitwise.
 
 
 
