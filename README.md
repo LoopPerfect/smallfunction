@@ -141,3 +141,32 @@ SFConcept<int,int>* functor = new Model<lambdaType, int, int>(lambda);
 ```
 
 We obviusly see this is quite cumbersome and error prone. The next step will be a container.
+
+
+## Pimpl
+
+Pimpl (private implementation) seperates, hides, manages the lifetime of the used implementation and exposes a limited public API.
+
+A straightforward implementation could look like this:
+
+```c++
+
+template<class ReturnType, class...Xs>
+class Function<ReturnType(Xs...)> {
+  std::shared_ptr<Concept<ReturnType,Xs...>> pimpl;
+
+public:
+  Function(){}
+
+  template<class F>
+  Function(F const& f)
+    : pimpl(new SFModel<F, ReturnType, Xs...> )  // heap allocation
+  {}
+  
+  ~Function() = default;
+
+};
+```
+
+This is more or less how std::function is implemented.
+So how do we get rid of the heap allocation ?
