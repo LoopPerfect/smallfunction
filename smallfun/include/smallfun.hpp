@@ -44,13 +44,12 @@ template<class Signature, unsigned size=128>
 struct SmallFun;
 
 template<class ReturnType, class...Xs, unsigned size>
-struct SmallFun<ReturnType(Xs...), size> {
+class SmallFun<ReturnType(Xs...), size> {
   char memory[size];
 
   bool allocated = 0;
-  using memType = decltype(memory);
   using concept = SFConcept<ReturnType, Xs...>;
-
+public:
   SmallFun(){}
 
   template<class F,
