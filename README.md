@@ -81,3 +81,63 @@ that the optimizer does not optimize away the thing we test.
 }
 ```
 
+
+# Implementation
+
+We need to combine three c++ patterns: type erasure, pimpl and placement new.
+
+## Type Erasure
+
+Type Erasure unifies many implementations into one interface.
+In our case every Lambda / Functor has a custom call operator and destructor.
+We need to automatically generate an implementation for any type the API consumer will be using.
+
+
+This shall be our public interface:
+
+```c++
+
+template<class ReturnType, class...Xs>
+struct Concept {
+  virtual ReturnType operator()(Xs...)const = 0;
+  virtual ReturnType operator()(Xs...) = 0;
+  virtual ~Concept() {};
+};
+```
+
+And for any callable type with for a given signature:
+
+```c++
+template<class F, class ReturnType, class...Xs>
+struct Model final
+  : Concept<ReturnType, Xs...> {
+  F f;
+
+  Model(F const& f)
+    : f(f)
+  {}
+
+  virtual ReturnType operator()(Xs...xs)const {
+    return f(xs...);
+  }
+
+  virtual ReturnType operator()(Xs...xs) {
+    return f(xs...);
+  }
+
+  virtual ~Model() {}
+};
+```
+
+Now we can use it the following way
+
+```c++
+
+auto lambda = [](int x) { return x; };
+using lambdaType = decltype(lambda);
+
+SFConcept<int,int>* functor = new Model<lambdaType, int, int>(lambda);
+
+```
+
+We obviusly see this is quite cumbersome and error prone. The next step will be a container.
