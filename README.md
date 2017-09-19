@@ -170,3 +170,41 @@ public:
 
 This is more or less how std::function is implemented.
 So how do we get rid of the heap allocation ?
+
+## placement new
+
+`placement new`  allocates memory at a given address.  
+
+### Example:
+
+```c++
+char memorypool[64];
+int* a = new (memorypool) int[4];
+int* b = new (memorypool + sizeof(int)*4 ) int[4];
+assert( (void*)a[0] == (void*)memorypool[0] );
+assert( (void*)b[0] == (void*)memorypool[32] );
+```
+
+## Putting it all togeather:
+
+We now just need to do minor changes to remove the heap allocation:
+
+```c++
+template<class ReturnType, class...Xs>
+class SmallFun<ReturnType(Xs...)> {
+  char memory[SIZE];
+public:
+  template<class F>
+  SmallFun(F const& f) 
+    : new (memory) Model<F, ReturnType, Xs...>  {
+    assert( sizeof(Model<F, ReturnType, Xs...>) < SIZE );
+  }
+  
+  ~SmallFun() {
+    if (allocated) {
+      ((concept*)memory)->~concept();
+    }
+  } 
+};
+
+```
