@@ -197,7 +197,7 @@ public:
   template<class F>
   SmallFun(F const& f) 
     : new (memory) Model<F, ReturnType, Xs...>  {
-    assert( sizeof(Model<F, ReturnType, Xs...>) < SIZE );
+    assert( sizeof(Model<F, ReturnType, Xs...>) < SIZE ); 
   }
   
   ~SmallFun() {
@@ -208,3 +208,34 @@ public:
 };
 
 ```
+
+As you may noticed if the Model<...>'s size is greater than SIZE bad bad things will happen...
+An assert will only catch this at runntime when it is to late...
+Luckily this can be catched at CompileTime using `enable_if_t`
+
+But first what about the copy constructor ?
+
+## Copy Constructor
+
+Unlike the implementation of `std::function` we cannot just copy nor move a shared_ptr.
+We also cant just copy bitwise the memory as the lambda may manage a ressource that can only be released once or has a sideeffect on sth. else.
+Therefore we need to make the model be able to copy-construct itself for a given memory location: 
+
+We just need to add:
+
+```c++
+  virtual void copy(void* memory)const {
+    new (memory) Model<F, ReturnType, Xs...>(f);
+  }
+
+
+  template<unsigned rhsSize,
+    std::enable_if_t<(rhsSize <= size), bool> = 0>
+  SmallFun(SmallFun<ReturnType(Xs...), rhsSize> const& rhs) {
+    rhs.copy(memory);
+  }
+  
+```
+
+
+
