@@ -65,17 +65,17 @@ SmallFun<unsigned(int const j), 64> f = [i, N] (int j) {
 
 ## Benchmarks
 
-| test          |    time   | note |
+| test          |time(g++6)| time clang++6 & libc++ | note |
 |---------------|-----------|---------------------------------------|
-| functor       |    191 ns | baseline that's the best we could do: a hand crafted functor |
-| sf32          |    312 ns | This is big enough to store 2 ints   |
-| sf64          |    369 ns | |
-| sf128         |    346 ns | |
-| sf256         |    376 ns | |
-| sf512         |    503 ns | |
-| sf1024        |    569 ns | |
-| sf2048        |    870 ns | |
-| std::function |   1141 ns | That's how std::function performs     |
+| functor       |    191 ns | 120 ns  | baseline that's the best we could do: a hand crafted functor |
+| sf32          |    312 ns | 300 ns  | This is big enough to store 2 ints   |
+| sf64          |    369 ns | 310 ns  | |
+| sf128         |    346 ns | 333 ns  | |
+| sf256         |    376 ns | 320 ns  | |
+| sf512         |    503 ns | 450 ns  | |
+| sf1024        |    569 ns | 512 ns  | |
+| sf2048        |    870 ns | 709 ns  | |
+| std::function |   1141 ns | 1511 ns | That's how std::function performs     |
 
 
 ### The Test
