@@ -66,7 +66,7 @@ SmallFun<unsigned(int const j), 64> f = [i, N] (int j) {
 ## Benchmarks
 
 | test          |time(g++6)| time clang++6 & libc++ | note |
-|---------------|-----------|---------------------------------------|
+|---------------|-----------|---------|------------------------------|
 | functor       |    191 ns | 120 ns  | baseline that's the best we could do: a hand crafted functor |
 | sf32          |    312 ns | 300 ns  | This is big enough to store 2 ints   |
 | sf64          |    369 ns | 310 ns  | |
