@@ -73,6 +73,7 @@ public:
     clean();
     allocated = sf.allocated;
     sf.copy(memory);
+    return *this;
   }
 
   void clean() {
